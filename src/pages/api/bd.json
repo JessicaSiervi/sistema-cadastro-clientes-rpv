@@ -1,13 +1,26 @@
 {
   "clientes": [
     {
-      "nome": "Daniel Ventura 2",
-      "email": "danielvalmeida91@gmail.com",
-      "cpfcnpj": "12345678900",
-      "sexo": "M",
+      "nome": "Jéssica Silva Siervi",
+      "email": "jessicasiervi10@gmail.com",
+      "cpfcnpj": "12345678910",
+      "sexo": "F",
       "cep": "36770066",
+      "rua": "Rua Sebastião Machado de Araujo",
+      "bairro": "Santa Clara",
+      "cidade": "Cataguases",
+      "estado": "MG",
+      "numero": "710",
+      "complemento": "201"
+    },
+    {
+      "nome": "Inácio Simoes Farage",
+      "email": "inaciofarg@gmail.com",
+      "cpfcnpj": "12345678982",
+      "sexo": "M",
+      "cep": "36772355",
       "rua": "Rua Joaquim Peixoto Ramos",
-      "bairro": "Centro",
+      "bairro": "Menezes",
       "cidade": "Cataguases",
       "estado": "MG",
       "numero": "12",
