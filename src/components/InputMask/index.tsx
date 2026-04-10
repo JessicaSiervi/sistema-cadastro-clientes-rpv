@@ -17,14 +17,13 @@ const sizeClassMap = {
     12: 'md:col-span-12'
 } as const
 
-type TInput<T extends FieldValues> = {
+type TInputMask<T extends FieldValues> = {
     required: boolean
     label: string
     name: keyof T
     register: UseFormRegister<T>
     errors: FieldErrors<T>
     size: keyof typeof sizeClassMap
-    funcaoParaSerMostrada: () => void
     masks: string | string[]
     placeholder?: string
 }
@@ -58,17 +57,16 @@ function resolveMask(value: string, availableMasks: string[]) {
     return availableMasks.find((mask) => digitsLength <= getDigitsLimit(mask)) ?? availableMasks[availableMasks.length - 1]
 }
 
-export function InputCallback({
+export function InputMask({
     errors,
     label,
+    masks,
     name,
     register,
     required,
     size,
-    funcaoParaSerMostrada,
-    masks,
-    placeholder = 'Digite aqui.'
-}: TInput<FormType>) {
+    placeholder = 'Digite'
+}: TInputMask<FormType>) {
     const registration = register(name)
     const availableMasks = Array.isArray(masks) ? masks : [masks]
     const maxLength = Math.max(...availableMasks.map((mask) => mask.length))
@@ -82,7 +80,7 @@ export function InputCallback({
     return(
         <div className={`col-span-12 sm:col-span-6 ${sizeClassMap[size]} relative flex flex-col`}>
             <label>{label}{required && (<span className='text-red-500'>*</span>)}: </label>
-            <input {...register(name)} maxLength={maxLength} onBlur={funcaoParaSerMostrada} onChange={handleChange} className='border rounded-md px-2 py-1 text-zinc-100' placeholder=""/>
+            <input {...registration} className='border rounded-md px-2 py-1 text-zinc-100' placeholder={placeholder} maxLength={maxLength} onChange={handleChange} />
             <span className='absolute top-16 text-xs text-red-500'>{errors[name]?.message}</span>
         </div>
     )

@@ -1,17 +1,27 @@
 import { Input } from '@/components/Input'
 import { InputCallback } from '@/components/InputCallback'
+import { InputMask } from '@/components/InputMask'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const DEFAULT_MESSAGE_RULE = "Campo obrigatório."
 
+function isCpfOrCnpj(value: string) {
+    const digitos = value.replace(/\D/g, '')
+    return digitos.length === 11 || digitos.length === 14
+}
+
 const regras = z.object({
         nome: z.string().min(1, DEFAULT_MESSAGE_RULE),
         email: z.email(DEFAULT_MESSAGE_RULE),
-        cpfcnpj: z.string().min(1, DEFAULT_MESSAGE_RULE).max(14, "Limite de 14 caracteres"),
+        cpfcnpj: z.string()
+            .min(1, DEFAULT_MESSAGE_RULE)
+            .max(18, "Limite de 18 caracteres")
+            .refine(isCpfOrCnpj, "Informe um CPF ou CNPJ válido."),
         sexo: z.string().min(1, DEFAULT_MESSAGE_RULE).max(1, "Limite de 1 caracteres."),
-        cep: z.string().min(1, DEFAULT_MESSAGE_RULE).max(9, "Cep inválido."),
+        cep: z.string().min(1, DEFAULT_MESSAGE_RULE)
+            .max(9, "Cep inválido."),
         rua: z.string().min(1, DEFAULT_MESSAGE_RULE),
         bairro: z.string().min(1, DEFAULT_MESSAGE_RULE),
         cidade: z.string().min(1, DEFAULT_MESSAGE_RULE),
@@ -32,24 +42,22 @@ export default function CadastrarClientes() {
         setValue
     } = useForm<FormType>({
         resolver: zodResolver(regras),
-        defaultValues: {
-            nome: "Daniel Ventura",
-            email: "danielvalmeida91@gmail.com",
-            cpfcnpj: "12345678900",
-            sexo: "M",
-            cep: "36770066",
-            rua: "Rua Joaquim Peixoto Ramos",
-            bairro: "Centro",
-            cidade: "Cataguases",
-            estado: "MG",
-            numero: "12",
-            complemento: "201"
-        }
+        // defaultValues: {
+        //     nome: "Daniel Ventura",
+        //     email: "danielvalmeida91@gmail.com",
+        //     cpfcnpj: "12345678900",
+        //     sexo: "M",
+        //     cep: "36770066",
+        //     rua: "Rua Joaquim Peixoto Ramos",
+        //     bairro: "Centro",
+        //     cidade: "Cataguases",
+        //     estado: "MG",
+        //     numero: "12",
+        //     complemento: "201"
+        // }
     })
-
+    console.log('errors', errors)
     async function onSubmit(data: FormType){
-        console.log('DATA DENTRO DO ONSUBMIT', data)
-
         const response = await fetch('/api/create/clientes', {
             method: "POST",
             headers: {
@@ -64,12 +72,12 @@ export default function CadastrarClientes() {
 
     async function buscaCep(){
         const cep = watch('cep')
-        if(cep.length !== 8) {
+        console.log('cep', cep.length)
+        if(cep.length !== 9) {
             setError('cep', { message: 'Cep inválido.'})
             return 
         }
         try {
-            setError('cep', { message: ''})
             const busca = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
             const response = await busca.json()
             if(response?.erro){
@@ -90,9 +98,10 @@ export default function CadastrarClientes() {
             <h1 className='text-center'>Cadastrar Cliente</h1>
             <div className='w-full flex items-center justify-center px-10'>
                 <form onSubmit={handleSubmit(onSubmit)} noValidate className='grid grid-cols-12 space-y-6 space-x-2'>
-                    <Input 
+                    <InputMask 
                         errors={errors}
                         label='CPF/CNPJ'
+                        masks={['###.###.###-##', '##.###.###/####-##']}
                         name='cpfcnpj'
                         register={register}
                         required
@@ -129,6 +138,7 @@ export default function CadastrarClientes() {
                         register={register}
                         required
                         size={3}
+                        masks={['#####-###']}
                         funcaoParaSerMostrada={buscaCep}
                     />
                     <Input 

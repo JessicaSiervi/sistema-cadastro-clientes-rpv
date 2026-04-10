@@ -19,3 +19,9 @@ export function formataEndereco({
     return `${rua}, ${numero} - ${complemento}, ${bairro}, ${cidade}/${estado}`
 }
 
+export const masksDefault = {
+    cpfcnpj: ['###.###.###-##', '##.###.###/####-##'],
+    telefone: '(##) ####-####',
+    celular: '(##) #####-####',
+    cep: '#####-###'
+}

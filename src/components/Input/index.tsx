@@ -23,6 +23,7 @@ type TInput<T extends FieldValues> = {
     register: UseFormRegister<T>
     errors: FieldErrors<T>
     size: keyof typeof sizeClassMap
+    placeholder?: string
 }
 
 export function Input({
@@ -31,12 +32,14 @@ export function Input({
     name,
     register,
     required,
-    size
+    size,
+    placeholder = 'Digite aqui.'
 }: TInput<FormType>) {
+
     return(
         <div className={`col-span-12 sm:col-span-6 ${sizeClassMap[size]} relative flex flex-col`}>
             <label>{label}{required && (<span className='text-red-500'>*</span>)}: </label>
-            <input {...register(name)} className='border rounded-md px-2 py-1 text-zinc-100'/>
+            <input {...register(name)} className='border rounded-md px-2 py-1 text-zinc-100' placeholder={placeholder}/>
             <span className='absolute top-16 text-xs text-red-500'>{errors[name]?.message}</span>
         </div>
     )
